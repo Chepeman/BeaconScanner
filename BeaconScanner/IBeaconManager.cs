@@ -14,6 +14,7 @@ namespace BeaconScanner
 		void StopScan();
 
 		void SetRangedAction(Action<IEnumerable<IBeacon>> action);
+
 	}
 }
 
