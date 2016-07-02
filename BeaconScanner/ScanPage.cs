@@ -30,7 +30,7 @@ namespace BeaconScanner
 			});
 
 			_scanButton = new Button();
-			_scanButton.IsEnabled = false;
+			_scanButton.IsEnabled = true;
 			_scanButton.Text = "Start Scan";
 			_scanButton.Clicked += _scanButton_Clicked;
 			_scanButton.HeightRequest = 80;
@@ -53,12 +53,7 @@ namespace BeaconScanner
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
-			App.BeaconManager.AddRegion("Estimote1", "B9407F30-F5F8-466E-AFF9-25556B57FE6D", 25304, 1457);
-			App.BeaconManager.AddRegion("Estimote2", "B9407F30-F5F8-466E-AFF9-25556B57FE6D", 25216, 1281);
-			App.BeaconManager.AddRegion("5739684d584f", "f7826da6-4fa2-4e98-8024-bc5b71e0893e");
-			App.BeaconManager.AddRegion("4f7234416c31", "f7826da6-4fa2-4e98-8024-bc5b71e0893e");
-			App.BeaconManager.SetRangedAction(OnRanged);
-			App.BeaconManager.StartScan();
+
 		}
 
 		void OnRanged(IEnumerable<IBeacon> beacons)
@@ -93,10 +88,12 @@ namespace BeaconScanner
 
 		void _scanButton_Clicked(object sender, EventArgs e)
 		{
-			/*EstimoteManager.Instance.StartRanging(new BeaconRegion("5739684d584f","f7826da6-4fa2-4e98-8024-bc5b71e0893e"));
-			EstimoteManager.Instance.StartRanging(new BeaconRegion("4f7234416c31","f7826da6-4fa2-4e98-8024-bc5b71e0893e"));
-			EstimoteManager.Instance.StartRanging(new BeaconRegion("c41821932394", "B9407F30-F5F8-466E-AFF9-25556B57FE6D", 25304, 1457));
-			EstimoteManager.Instance.StartRanging(new BeaconRegion("c9c43ff35719", "B9407F30-F5F8-466E-AFF9-25556B57FE6D", 25216, 1281));*/
+			App.BeaconManager.AddRegion("Estimote1", "B9407F30-F5F8-466E-AFF9-25556B57FE6D", 25304, 1457);
+			App.BeaconManager.AddRegion("Estimote2", "B9407F30-F5F8-466E-AFF9-25556B57FE6D", 25216, 1281);
+			App.BeaconManager.AddRegion("5739684d584f", "f7826da6-4fa2-4e98-8024-bc5b71e0893e");
+			App.BeaconManager.AddRegion("4f7234416c31", "f7826da6-4fa2-4e98-8024-bc5b71e0893e");
+			App.BeaconManager.SetRangedAction(OnRanged);
+			App.BeaconManager.StartScan();
 		}
 	}
 }

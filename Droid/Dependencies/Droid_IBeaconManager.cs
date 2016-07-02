@@ -4,10 +4,11 @@ using EstimoteSdk;
 using Android.App;
 using Java.Util.Concurrent;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BeaconScanner.Droid
 {
-	public class Droid_IBeaconManager : IBeaconManager, BeaconManager.IServiceReadyCallback
+	public class Droid_IBeaconManager : Java.Lang.Object, IBeaconManager, BeaconManager.IServiceReadyCallback
 	{
 		BeaconManager _beaconManager;
 		Region _region;
@@ -18,14 +19,6 @@ namespace BeaconScanner.Droid
 
 		public Droid_IBeaconManager()
 		{
-		}
-
-		public IntPtr Handle
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
 		}
 
 		public void AddRegion(string id, string uuid, int major = -1, int minor = -1)
@@ -48,13 +41,14 @@ namespace BeaconScanner.Droid
 			_beaconManager.Dispose();
 		}
 
-		public bool Init()
+		public async Task<bool> Init()
 		{
 			_beaconManager = new BeaconManager(Xamarin.Forms.Forms.Context as Activity);
 			if (_beaconManager != null)
 			{
 				_beaconManager.SetBackgroundScanPeriod(TimeUnit.Seconds.ToMillis(1), 0);
 				_itemsList = new List<Region>();
+				_beaconManager.Connect(this);
 				return true;
 			}
 
@@ -79,7 +73,11 @@ namespace BeaconScanner.Droid
 				{
 					_beaconManager.StartRanging(regionItem);
 				}
-				_beaconManager.Ranging += _beaconManager_Ranging;
+				_beaconManager.Ranging += (sender, args) =>
+				{
+					var beacons = args.Beacons.Select(x => new Beacon(x.Rssi, x.Major, x.Minor, x.Name, GetProximity(x), x.ProximityUUID.ToString()));
+					_updateBeacons?.Invoke(beacons);
+				};
 			}
 		}
 
@@ -94,22 +92,24 @@ namespace BeaconScanner.Droid
 
 		void _beaconManager_Ranging(object sender, BeaconManager.RangingEventArgs e)
 		{
-			var beacons = e.Beacons.Select(x => new Beacon(x.Rssi, x.Major, x.Minor, x.Name, GetProximity(x.ProximityUUID.ToString()), e.Region.Identifier));
+			var beacons = e.Beacons.Select(x => new Beacon(x.Rssi, x.Major, x.Minor, x.Name, GetProximity(x), x.ProximityUUID.ToString()));
 			_updateBeacons?.Invoke(beacons);
 		}
 
-		private Proximity GetProximity(string nativeProximity)
+		private Proximity GetProximity(EstimoteSdk.Beacon beacon)
 		{
+			var nativeProx = Utils.ComputeProximity(beacon);
+
 			Proximity prox;
-			if (nativeProximity == Proximity.Immediate.ToString())
+			if (nativeProx == Utils.Proximity.Immediate)
 			{
 				prox = Proximity.Immediate;
 			}
-			else if (nativeProximity == Proximity.Near.ToString())
+			else if (nativeProx == Utils.Proximity.Near)
 			{
 				prox = Proximity.Near;
 			}
-			else if (nativeProximity == Proximity.Far.ToString())
+			else if (nativeProx == Utils.Proximity.Far)
 			{
 				prox = Proximity.Far;
 			}
