@@ -6,16 +6,20 @@ namespace BeaconScanner
 {
 	public class App : Application
 	{
+		public static IBeaconManager BeaconManager;
+
 		public App()
 		{
 			// The root page of your application
-
+			BeaconManager = DependencyService.Get<IBeaconManager>();
 			MainPage = new NavigationPage(new ScanPage());
 		}
 
-		protected override void OnStart()
+		protected async override void OnStart()
 		{
 			// Handle when your app starts
+			var result = await BeaconManager.Init();
+			var debug = true;
 		}
 
 		protected override void OnSleep()

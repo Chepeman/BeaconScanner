@@ -1,6 +1,7 @@
 ﻿using System;
 using Xamarin.Forms;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace BeaconScanner
 {
@@ -17,7 +18,7 @@ namespace BeaconScanner
 				var identifierLabel = new Label { HorizontalTextAlignment = TextAlignment.Start };
 				var proximityLabel = new Label { HorizontalTextAlignment = TextAlignment.End };
 
-				identifierLabel.SetBinding(Label.TextProperty, "Uuid");
+				identifierLabel.SetBinding(Label.TextProperty, "Distance");
 				proximityLabel.SetBinding(Label.TextProperty, "Proximity");
 
 				var beaconInfo = new StackLayout();
@@ -52,7 +53,17 @@ namespace BeaconScanner
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
+			App.BeaconManager.AddRegion("Estimote1", "B9407F30-F5F8-466E-AFF9-25556B57FE6D", 25304, 1457);
+			App.BeaconManager.AddRegion("Estimote2", "B9407F30-F5F8-466E-AFF9-25556B57FE6D", 25216, 1281);
+			App.BeaconManager.AddRegion("5739684d584f", "f7826da6-4fa2-4e98-8024-bc5b71e0893e");
+			App.BeaconManager.AddRegion("4f7234416c31", "f7826da6-4fa2-4e98-8024-bc5b71e0893e");
+			App.BeaconManager.SetRangedAction(OnRanged);
+			App.BeaconManager.StartScan();
+		}
 
+		void OnRanged(IEnumerable<IBeacon> beacons)
+		{
+			_beaconsList.ItemsSource = beacons;
 		}
 
 		/*private async Task InitializeManager()
