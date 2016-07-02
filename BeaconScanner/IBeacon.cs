@@ -22,6 +22,8 @@ namespace BeaconScanner
 		int Minor { get; }
 
 		string Name { get; }
+
+		double Meters { get; }
 	}
 }
 

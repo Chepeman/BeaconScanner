@@ -93,7 +93,7 @@ namespace BeaconScanner.Droid
 
 		void _beaconManager_Ranging(object sender, BeaconManager.RangingEventArgs e)
 		{
-			var beacons = e.Beacons.Select(x => new Beacon(x.Rssi, x.Major, x.Minor, x.Name, GetProximity(x), x.ProximityUUID.ToString()));
+			var beacons = e.Beacons.Select(x => new Beacon(x.Rssi, x.Major, x.Minor, x.Name, GetProximity(x), x.ProximityUUID.ToString(), GetDistance(x)));
 			List<Beacon> copy;
 
 			lock (this.beaconsInRange)
@@ -134,6 +134,16 @@ namespace BeaconScanner.Droid
 					return i;
 			}
 			return -1;
+		}
+
+
+		private double GetDistance(EstimoteSdk.Beacon beacon)
+		{
+			double distance = -1;
+
+			distance = Utils.ComputeAccuracy(beacon);
+
+			return Math.Round(distance, 2, MidpointRounding.AwayFromZero);
 		}
 
 		private Proximity GetProximity(EstimoteSdk.Beacon beacon)
