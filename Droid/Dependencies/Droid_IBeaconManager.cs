@@ -30,7 +30,7 @@ namespace BeaconScanner.Droid
 				regionItem = new Region(id, uuid, major, minor);
 			else if (major != -1 && minor == -1)
 				regionItem = new Region(id, uuid, major);
-
+			
 			if(regionItem != null)
 				_itemsList.Add(regionItem);
 		}
@@ -73,11 +73,6 @@ namespace BeaconScanner.Droid
 				{
 					_beaconManager.StartRanging(regionItem);
 				}
-				_beaconManager.Ranging += (sender, args) =>
-				{
-					var beacons = args.Beacons.Select(x => new Beacon(x.Rssi, x.Major, x.Minor, x.Name, GetProximity(x), x.ProximityUUID.ToString()));
-					_updateBeacons?.Invoke(beacons);
-				};
 			}
 		}
 
