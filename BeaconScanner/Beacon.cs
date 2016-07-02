@@ -5,57 +5,39 @@ namespace BeaconScanner
 	{
 		internal Beacon(double rssi, int major, int minor, string name, Proximity proximity, string uuid)
 		{
+			_rssi = rssi;
+			_major = major;
+			_minor = minor;
+			_name = name;
+			_proximity = proximity;
+			_uuid = uuid;
 		}
+
+		double _rssi;
+
+		int _major;
+
+		int _minor;
+
+		string _name;
+
+		Proximity _proximity;
+
+		string _uuid;
 
 		#region IBeacon
 
-		public double Distance
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
+		public double Distance => _rssi;
 
-		public int Major
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
+		public int Major => _major;
 
-		public int Minor
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
+		public int Minor => _minor;
 
-		public string Name
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
+		public string Name => _name;
 
-		public Proximity Proximity
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
+		public Proximity Proximity => _proximity;
 
-		public string UUID
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
+		public string UUID => _uuid;
 
 		#endregion
 	}
