@@ -73,7 +73,7 @@ namespace BeaconScanner.Droid
 		{
 			if (_beaconManager != null)
 			{
-				_beaconManager.Ranging -= _beaconManager_Ranging;
+				//_beaconManager.Ranging -= _beaconManager_Ranging;
 				_beaconManager.Ranging += _beaconManager_Ranging;
 				foreach (var regionItem in _itemsList)
 				{
