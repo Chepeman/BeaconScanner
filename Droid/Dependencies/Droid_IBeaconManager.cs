@@ -13,7 +13,8 @@ namespace BeaconScanner.Droid
 		Region _region;
 
 		List<Region> _itemsList;
-		List<IBeacon> _beaconsFoundList;
+
+		Action<IEnumerable<IBeacon>> _updateBeacons;
 
 		public Droid_IBeaconManager()
 		{
@@ -54,7 +55,6 @@ namespace BeaconScanner.Droid
 			{
 				_beaconManager.SetBackgroundScanPeriod(TimeUnit.Seconds.ToMillis(1), 0);
 				_itemsList = new List<Region>();
-				_beaconsFoundList = new List<IBeacon>();
 				return true;
 			}
 
@@ -68,7 +68,7 @@ namespace BeaconScanner.Droid
 
 		public void SetRangedAction(Action<IEnumerable<IBeacon>> action)
 		{
-			throw new NotImplementedException();
+			_updateBeacons = action;
 		}
 
 		public void StartScan()
@@ -94,8 +94,30 @@ namespace BeaconScanner.Droid
 
 		void _beaconManager_Ranging(object sender, BeaconManager.RangingEventArgs e)
 		{
-			var Nearnables = e.Beacons;
+			var beacons = e.Beacons.Select(x => new Beacon(x.Rssi, x.Major, x.Minor, x.Name, GetProximity(x.ProximityUUID.ToString()), e.Region.Identifier));
+			_updateBeacons?.Invoke(beacons);
+		}
 
+		private Proximity GetProximity(string nativeProximity)
+		{
+			Proximity prox;
+			if (nativeProximity == Proximity.Immediate.ToString())
+			{
+				prox = Proximity.Immediate;
+			}
+			else if (nativeProximity == Proximity.Near.ToString())
+			{
+				prox = Proximity.Near;
+			}
+			else if (nativeProximity == Proximity.Far.ToString())
+			{
+				prox = Proximity.Far;
+			}
+			else {
+				prox = Proximity.Unknown;
+			}
+
+			return prox;
 		}
 	}
 }
