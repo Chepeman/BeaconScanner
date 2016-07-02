@@ -4,6 +4,7 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
+using Xamarin.Forms;
 
 namespace BeaconScanner.iOS
 {
@@ -13,6 +14,8 @@ namespace BeaconScanner.iOS
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
 			global::Xamarin.Forms.Forms.Init();
+
+			DependencyService.Register<IBeaconManager, iOS_IBeaconManager>();
 
 			LoadApplication(new App());
 

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BeaconScanner
 {
 	public interface IBeaconManager
 	{
-		bool Init();
+		Task<bool> Init();
 
 		void AddRegion(string id, string uuid, int major = -1, int minor = -1);
 
