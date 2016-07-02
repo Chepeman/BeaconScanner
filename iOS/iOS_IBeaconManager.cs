@@ -21,24 +21,11 @@ namespace BeaconScanner.iOS
 				ReturnAllRangedBeaconsAtOnce = true
 			};
 
-			this.beaconManager.EnteredRegion += (sender, args) =>
-			{
-				var debug = true;
-			};
-
-			this.beaconManager.ExitedRegion += (sender, args) =>
-			{
-				var debug = true;
-			};
-
 			this.beaconManager.RangedBeacons += (sender, args) =>
 			{
 				var region = args.Region?.Identifier;
-				if (!string.IsNullOrWhiteSpace(region))
-				{
-					var debug = true;
-				}
-				var beacons = args.Beacons.Select(x => new Beacon(x.Accuracy, x.Major.UInt16Value, x.Minor.UInt16Value, region ?? x.ProximityUuid.AsString(), GetProximity(x.Proximity), x.ProximityUuid.AsString()));
+				var beacons = args.Beacons.Select(x => new Beacon(x.Rssi, x.Major.UInt16Value, x.Minor.UInt16Value, region ?? x.ProximityUuid.AsString(), GetProximity(x.Proximity), x.ProximityUuid.AsString(), GetDistance(x)));
+				beacons = beacons.Where(x => x.Proximity != Proximity.Unknown);
 				_updateBeacons?.Invoke(beacons);
 			};
 		}
@@ -59,8 +46,6 @@ namespace BeaconScanner.iOS
 			}
 		}
 
-		bool _isInitialized;
-
 		Action<IEnumerable<IBeacon>> _updateBeacons;
 
 		bool IsGoodStatus(CLAuthorizationStatus status)
@@ -74,6 +59,15 @@ namespace BeaconScanner.iOS
 
 
 		List<CLBeaconRegion> _regions;
+
+		private double GetDistance(CLBeacon beacon)
+		{
+			double distance = -1;
+
+			distance = beacon.Accuracy;
+
+			return Math.Round(distance, 2, MidpointRounding.AwayFromZero);
+		}
 
 		#region IBeaconManager
 
@@ -142,6 +136,7 @@ namespace BeaconScanner.iOS
 			{
 				this.beaconManager.StopRangingBeaconsInRegion(region);
 			}
+			_regions.Clear();
 		}
 
 		#endregion

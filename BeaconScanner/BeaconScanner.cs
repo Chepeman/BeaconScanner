@@ -12,7 +12,10 @@ namespace BeaconScanner
 		{
 			// The root page of your application
 			BeaconManager = DependencyService.Get<IBeaconManager>();
-			MainPage = new NavigationPage(new ScanPage());
+			MainPage = new NavigationPage(new ScanPage()) {
+				BarTextColor = Color.White,
+				BarBackgroundColor = Color.FromHex("#2196F3")
+			};
 		}
 
 		protected async override void OnStart()
