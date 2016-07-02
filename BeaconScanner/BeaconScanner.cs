@@ -21,8 +21,7 @@ namespace BeaconScanner
 		protected async override void OnStart()
 		{
 			// Handle when your app starts
-			var result = await BeaconManager.Init();
-			var debug = true;
+			await BeaconManager.Init();
 		}
 
 		protected override void OnSleep()
